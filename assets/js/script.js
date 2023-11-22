@@ -1,5 +1,5 @@
 // Array for Storage
-cityNames = ["London", "Melbourne", "Tokyo"]
+cityNames = []
 
 // Displaying Weather Function
 function displayWeather () {
@@ -32,35 +32,43 @@ function displayWeather () {
 
             var time = data.list[i].dt_txt
 
-            var now = dayjs(currentTime).format("dddd")
+            var now = dayjs(currentTime).format("D MMMM YYYY")
 
-            var after = dayjs(time).format("dddd")
+            var after = dayjs(time).format("D MMMM YYYY")
 
             pOne = $("<p>").text(now)
+
+            //Icon
+            var currentIcon = data.list[0].weather[0].icon
+
+            pTwo = $("<img>").attr("src", "http://openweathermap.org/img/w/" + currentIcon + ".png")
+
+            var icon = data.list[i].weather[0].icon
       
             // Temp
             var currentTemp = data.list[0].main.temp
 
             var temp = data.list[i].main.temp
             
-            pTwo = $("<p>").text("Temperature: " + currentTemp + " °C")
+            pThree = $("<p>").text("Temperature: " + currentTemp + " °C")
 
             // Wind
             var currentWind = data.list[0].wind.speed
 
             var wind = data.list[i].wind.speed
 
-            pThree = $("<p>").text("Wind Speeds: " + currentWind + " KPH")
+            pFour = $("<p>").text("Wind Speeds: " + currentWind + " KPH")
 
             //Humidity
             var currentHum = data.list[0].main.humidity
 
             var hum = data.list[i].main.humidity
 
-            pFour = $("<p>").text("Humidity: " + currentHum + "%")
+            pFive = $("<p>").text("Humidity: " + currentHum + "%")
 
             // The next 4 days
             fourTime = $("<p>").text(after)
+            fourIcon = $("<img>").attr("src", "http://openweathermap.org/img/w/" + icon + ".png")
             fourTemp = $("<p>").text("Temperature: " + temp + " °C")
             fourWind = $("<p>").text("Wind Speeds: " + wind + " KPH")
             fourHum = $("<p>").text("Humidity: " + hum + "%")
@@ -69,7 +77,7 @@ function displayWeather () {
 
             var fourDiv = $("<div class='col card'>")
 
-            fourDiv.append(fourTime, fourTemp, fourWind, fourHum)
+            fourDiv.append(fourTime, fourIcon, fourTemp, fourWind, fourHum)
 
             four.append(fourDiv)
 
@@ -77,7 +85,7 @@ function displayWeather () {
 
         currentDay = $("#currentDay")
 
-        currentDay.append(pOne, pTwo, pThree, pFour)
+        currentDay.append(pOne, pTwo, pThree, pFour, pFive)
         
     })
 }
@@ -98,14 +106,30 @@ function historyButtons() {
     }
 }
 
+// Search Input
 $("#searchButton").on("click", function(event) {
     event.preventDefault();
 
     var city = $("#inputBar").val().trim();
 
-    cityNames.push(city);
+    if (city == "") {
+        alert("Please Enter A City Name")
+    } else {
+        cityNames.push(city);
+
+        historyButtons();
+    }
+    
+})
+
+// Clear Button
+$("#clearButton").on("click", function() {
+
+    $("#citySearched").empty();
+    cityNames = []
 
     historyButtons();
+ 
 })
 
 $(document).on("click", "#cities", displayWeather);
